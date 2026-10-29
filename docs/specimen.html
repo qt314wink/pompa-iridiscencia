@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iridlab Bubble Membrane — Evidence Viewer</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { max-width: 1180px; }
+    .evidence-header { text-align: center; margin: 1rem auto 2rem; max-width: 760px; }
+    .evidence-header p { text-align: center; }
+    .status { display: inline-block; padding: .35rem .7rem; border: 1px solid #5ed3ff66; border-radius: 999px; color: #9feaff; font: 12px/1.2 ui-monospace, monospace; }
+    .evidence-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    figure { margin: 0; padding: 12px; background: #171a2b; border: 1px solid #ffffff14; border-radius: 14px; }
+    figure img { width: 100%; aspect-ratio: 1; object-fit: contain; background: #0b0d16; border-radius: 10px; image-rendering: auto; }
+    figcaption { margin-top: 10px; color: #f2f3f7; font-size: 13px; }
+    figcaption small { display: block; color: #a9adc6; margin-top: 4px; }
+    .callout { margin: 18px 0; padding: 16px; border-left: 3px solid #ff4ecd; background: #171a2b; border-radius: 10px; color: #d8dbef; }
+    .links { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 1.2rem 0; }
+    .links a { color: #0e0f1a; background: linear-gradient(90deg,#ff4ecd,#5ed3ff,#7cff8f); padding: 9px 13px; border-radius: 9px; text-decoration: none; font-weight: 700; }
+    .links a.secondary { color: #f2f3f7; background: #252a42; }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="evidence-header">
+      <span class="status">GENERATED HYPOTHESIS · NOT CALIBRATED</span>
+      <h1>Iridlab Bubble Membrane</h1>
+      <p>Source-preserving evidence viewer for the supplied material specimen. These images document map structure and reference state; they do not claim that the maps are already bound to the simulator.</p>
+      <div class="links">
+        <a href="index.html">Open simulator</a>
+        <a class="secondary" href="../specimens/bubble_membrane/material.json">material.json</a>
+        <a class="secondary" href="../specimens/bubble_membrane/manifest.json">manifest.json</a>
+      </div>
+    </header>
+    <section class="callout" aria-label="Evidence boundary">
+      <strong>Review boundary:</strong> the reference crop contains the colorful rim; the CPU diagnostic is a dark sphere with a highlight. The source maps are internally packed consistently, but renderer binding, optical parity, seam behavior, and mobile cost remain open gates.
+    </section>
+    <section class="evidence-grid" aria-label="Bubble specimen evidence">
+      <figure><img src="../specimens/bubble_membrane/reference_crop.png" alt="Reference crop of a dark spherical bubble with a colorful iridescent rim"><figcaption>Reference crop<small>320×320 · alpha-masked screenshot crop</small></figcaption></figure>
+      <figure><img src="../specimens/bubble_membrane/diagnostic_cpu.png" alt="CPU diagnostic showing a mostly dark sphere with a small highlight"><figcaption>CPU diagnostic<small>200×200 · baseline diagnostic output</small></figcaption></figure>
+      <figure><img src="../specimens/bubble_membrane/maps/iridescence_mask.png" alt="Grayscale iridescence influence mask"><figcaption>Iridescence mask<small>R channel · variable high-coverage field</small></figcaption></figure>
+      <figure><img src="../specimens/bubble_membrane/maps/iridescence_thickness_normalized.png" alt="Normalized thin-film thickness map"><figcaption>Thickness field<small>16-bit non-color · normalized for binding</small></figcaption></figure>
+      <figure><img src="../specimens/bubble_membrane/maps/iridescence_packed_rg.png" alt="Packed iridescence mask and thickness channels"><figcaption>Packed iridescence RG<small>R=mask · G=thickness · B=unused</small></figcaption></figure>
+      <figure><img src="../specimens/bubble_membrane/maps/roughness.png" alt="Roughness map"><figcaption>Roughness<small>R channel · narrow low-roughness range</small></figcaption></figure>
+      <figure><img src="../specimens/bubble_membrane/maps/normal.png" alt="Flat OpenGL tangent-space normal map"><figcaption>Normal<small>Flat [128,128,255] · no relief claim</small></figcaption></figure>
+      <figure><img src="../specimens/bubble_membrane/maps/height.png" alt="Flat height map"><figcaption>Height<small>Constant 16-bit value · no displacement claim</small></figcaption></figure>
+    </section>
+  </main>
+</body>
+</html>

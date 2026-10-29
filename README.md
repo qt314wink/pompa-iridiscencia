@@ -183,3 +183,19 @@ Physics Degree - University of Oviedo
 
 - https://www.linkedin.com/in/santiago-garc%C3%ADa-rodr%C3%ADguez-b8aa58240/
 - https://github.com/SantiagoGR11
+
+## Iridlab bubble-membrane evidence branch
+
+The `feat/iridlab-bubble-membrane-runtime` branch adds the source-preserving `iridlab_bubble_membrane_v0_1` specimen, a browser evidence viewer, and deterministic validation records. It does not claim that the supplied texture maps are physically calibrated or already bound to the existing thin-film simulator.
+
+Read the reproducibility guide at [`docs/REPRODUCE_BUBBLE_MEMBRANE.md`](docs/REPRODUCE_BUBBLE_MEMBRANE.md), then run:
+
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+python3 tests/validate_specimen.py
+python3 -m http.server 4173 --directory .
+```
+
+Open `http://127.0.0.1:4173/docs/index.html` for the simulator or `http://127.0.0.1:4173/docs/specimen.html` for the reference/map evidence viewer. The experiment ledger, validation plan, and decision log record the source boundary, controls, failure conditions, and promotion gates.
