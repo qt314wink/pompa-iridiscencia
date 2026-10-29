@@ -1,0 +1,159 @@
+{
+  "model": "seeded periodic fields, not trained ML",
+  "seed": 4027186165,
+  "resolution": [
+    384,
+    384
+  ],
+  "reference": {
+    "source": "1000003653.png",
+    "sphere_center_xy": [
+      1260,
+      331
+    ],
+    "assumed_radius_px": 148,
+    "crop_box_xyxy": [
+      1112,
+      183,
+      1408,
+      479
+    ],
+    "type": "reference screenshot sphere crop; black surroundings alpha-masked",
+    "validation": "manual bounds; verify per specimen"
+  },
+  "derived_from_screenshot_pixels": false,
+  "reference_only_not_UV": true,
+  "normal_convention": "OpenGL +Y; tangent-space; normal map is independently authored via height gradients",
+  "tileable_intent": "periodic noise, angular/cell fields may have seam errors: QA required",
+  "renderer": "Three.js MeshPhysicalMaterial baseline where supported; external stages are not baked",
+  "parameters": {
+    "baseColor": "#ffffff",
+    "artist_palette": [
+      "#030b16",
+      "#0b1422",
+      "#152534"
+    ],
+    "roughness": 0.04,
+    "metalness": 0,
+    "normalScale": [
+      0.7,
+      0.7
+    ],
+    "bump_strength_relative": 0.008,
+    "ior": 1.33,
+    "iridescence": 1,
+    "iridescenceIOR": 1.33,
+    "iridescenceThicknessRange_nm": [
+      120,
+      830
+    ],
+    "anisotropy": 0,
+    "anisotropyRotation_rad": 0,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0,
+    "transmission": 0.97,
+    "thickness": 0,
+    "dispersion": 0,
+    "sheen": 0,
+    "emissiveIntensity": 0,
+    "alpha": 1.0,
+    "usage_warning": "All scalar PBR maps here encode absolute starting values; when those maps are bound set corresponding material multipliers to 1.0 (except anisotropy strength, which is an explicit multiplier) to avoid squaring them.",
+    "doubleSide": true
+  },
+  "maps": {
+    "basecolor": {
+      "file": "maps/basecolor.png",
+      "channels": "RGB",
+      "bits": 8,
+      "color_space": "sRGB"
+    },
+    "normal": {
+      "file": "maps/normal.png",
+      "channels": "RGB",
+      "bits": 8,
+      "color_space": "non-color"
+    },
+    "height": {
+      "file": "maps/height.png",
+      "channels": "R",
+      "bits": 16,
+      "color_space": "non-color"
+    },
+    "roughness": {
+      "file": "maps/roughness.png",
+      "channels": "R",
+      "bits": 8,
+      "color_space": "non-color"
+    },
+    "metalness": {
+      "file": "maps/metalness.png",
+      "channels": "R",
+      "bits": 8,
+      "color_space": "non-color"
+    },
+    "ambient_occlusion": {
+      "file": "maps/ambient_occlusion.png",
+      "channels": "R",
+      "bits": 8,
+      "color_space": "non-color"
+    },
+    "cavity": {
+      "file": "maps/cavity.png",
+      "channels": "R",
+      "bits": 8,
+      "color_space": "non-color"
+    },
+    "orm": {
+      "file": "maps/orm.png",
+      "channels": "R=AO G=roughness B=metalness",
+      "bits": 8,
+      "color_space": "non-color"
+    },
+    "iridescence_mask": {
+      "file": "maps/iridescence_mask.png",
+      "channels": "R",
+      "bits": 8,
+      "color_space": "non-color"
+    },
+    "iridescence_thickness_normalized": {
+      "file": "maps/iridescence_thickness_normalized.png",
+      "channels": "R",
+      "bits": 16,
+      "color_space": "non-color"
+    },
+    "iridescence_packed_rg": {
+      "file": "maps/iridescence_packed_rg.png",
+      "channels": "R=mask G=thickness B=unused",
+      "bits": 8,
+      "color_space": "non-color"
+    },
+    "transmission": {
+      "file": "maps/transmission.png",
+      "channels": "R",
+      "bits": 8,
+      "color_space": "non-color"
+    }
+  },
+  "external_mechanisms": [
+    "two_interface_thin_film_interference",
+    "fresnel_reflection",
+    "transmission",
+    "animated_thickness",
+    "scene_background"
+  ],
+  "validation_status": "generated / requires real render & artistic acceptance",
+  "inference_status": "artist hypothesis, not recovered physically calibrated measurements",
+  "evidence_basis": [
+    "source mockup crop",
+    "Three.js MeshPhysicalMaterial channel definitions",
+    "Khronos glTF material extensions",
+    "MatSynth map taxonomy"
+  ],
+  "confidence": {
+    "structure": "low-to-medium (visual interpretation)",
+    "numeric_material_values": "low (synthetic initial guesses)",
+    "maps": "low; synthetic but internally connected"
+  },
+  "created_utc": "2026-10-09T22:36:55.450621+00:00",
+  "generator_version": "0.1.0"
+}
