@@ -29,6 +29,10 @@ varying vec3 vPosObj;
 uniform float e0_nm;            // nm 
 uniform float eavg_nm;          // nm 
 uniform float alpha;            // drainage
+uniform bool specimenEnabled;
+uniform sampler2D specimenPackedTex; // R=mask, G=normalized thickness
+uniform float specimenThicknessMinNm;
+uniform float specimenThicknessMaxNm;
 
 // ---- Optics parameters ----
 uniform float n1;               // IOR air
@@ -120,6 +124,12 @@ void main(){
   // Local thickness: cosφ ≈ yLocal (sphere with radius 1)
   float cosPhi = clamp(vPosObj.y, -1.0, 1.0);
   float d_nm   = thickness_nm_from_cosphi(cosPhi);
+  if (specimenEnabled) {
+    vec2 specimenUv = vPosObj.xy * 0.5 + 0.5;
+    vec4 packed = texture2D(specimenPackedTex, specimenUv);
+    float specimenThickness = mix(specimenThicknessMinNm, specimenThicknessMaxNm, packed.g);
+    d_nm = mix(d_nm, specimenThickness, packed.r);
+  }
   float d_m    = d_nm * 1e-9;
 
   // Spectral integration (Airy + Fresnel s/p)

@@ -136,6 +136,12 @@ const uniforms = {
   e0_nm: { value: 50.0 },
   eavg_nm: { value: 900.0 },
 
+  // G1 specimen binding (off by default; enable with ?g1=1 or the checkbox)
+  specimenEnabled: { value: new URLSearchParams(location.search).get('g1') === '1' },
+  specimenPackedTex: { value: new THREE.DataTexture(new Uint8Array([255, 128, 0, 255]), 1, 1, THREE.RGBAFormat) },
+  specimenThicknessMinNm: { value: 120.0 },
+  specimenThicknessMaxNm: { value: 830.0 },
+
   // Reflectance effects
   showTransmission: { value: true }
 };
@@ -236,6 +242,16 @@ material.uniforms.wlEnd   = { value: WL_END };
 material.uniforms.stepNm  = { value: STEP };
 material.uniforms.kNorm   = { value: k_norm };
 
+// G1 specimen binding: packed RG = mask/thickness. Keep source maps untouched.
+const specimenPackedTex = new THREE.TextureLoader().load('./../specimens/bubble_membrane/maps/iridescence_packed_rg.png',
+  () => { material.uniforms.specimenPackedTex.value = specimenPackedTex; });
+specimenPackedTex.colorSpace = THREE.NoColorSpace;
+specimenPackedTex.wrapS = THREE.ClampToEdgeWrapping;
+specimenPackedTex.wrapT = THREE.ClampToEdgeWrapping;
+specimenPackedTex.minFilter = THREE.LinearFilter;
+specimenPackedTex.magFilter = THREE.LinearFilter;
+material.uniforms.specimenPackedTex.value = specimenPackedTex;
+
 
 // === CONTROL OF THE SIMULATION WITH THE PHYSICAL PARAMETERS =========================
 // Link the sliders of the UI with the corresponding uniforms of the shader
@@ -254,6 +270,8 @@ const e0Val   = document.getElementById("e0Val");
 const eavgVal = document.getElementById("eavgVal");
 const lambdaVal = document.getElementById("lambdaVal");
 const deslambdaVal = document.getElementById("deslambdaVal");
+const specimenToggle = document.getElementById("specimenToggle");
+const specimenState = document.getElementById("specimenState");
 
 // Matching the initial values of the UI with the initial values of the shader uniforms
 n2Val.textContent   = Number(n2Slider.value).toFixed(2);
@@ -261,6 +279,42 @@ e0Val.textContent   = Number(e0Slider.value).toFixed(0);
 eavgVal.textContent = Number(eavgSlider.value).toFixed(0);
 lambdaVal.textContent = Number(lambdaSlider.value).toFixed(0);
 deslambdaVal.textContent = Number(deslambdaSlider.value).toFixed(0);
+if (specimenToggle) specimenToggle.checked = material.uniforms.specimenEnabled.value;
+if (specimenState) specimenState.textContent = material.uniforms.specimenEnabled.value ? 'G1 specimen bound' : 'baseline shader';
+
+specimenToggle?.addEventListener('change', () => {
+  material.uniforms.specimenEnabled.value = specimenToggle.checked;
+  if (specimenState) specimenState.textContent = specimenToggle.checked ? 'G1 specimen bound' : 'baseline shader';
+});
+
+window.__bubbleDiagnostics = () => {
+  const gl = renderer.getContext();
+  const pixels = new Uint8Array(renderer.domElement.width * renderer.domElement.height * 4);
+  gl.readPixels(0, 0, renderer.domElement.width, renderer.domElement.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+  let sum = [0, 0, 0], sum2 = [0, 0, 0], nonBlack = 0;
+  const n = renderer.domElement.width * renderer.domElement.height;
+  for (let i = 0; i < n; i++) {
+    const r = pixels[i * 4] / 255, g = pixels[i * 4 + 1] / 255, b = pixels[i * 4 + 2] / 255;
+    const y = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    if (y > 0.02) nonBlack++;
+    for (const [j, v] of [r, g, b].entries()) { sum[j] += v; sum2[j] += v * v; }
+  }
+  const mean = sum.map(v => v / n);
+  const std = sum2.map((v, j) => Math.sqrt(Math.max(0, v / n - mean[j] * mean[j])));
+  return {
+    fixture: material.uniforms.specimenEnabled.value ? 'G1-POS' : 'G1-BASE',
+    webgl: gl instanceof WebGL2RenderingContext ? 'WebGL2' : 'WebGL1',
+    drawingBuffer: [renderer.domElement.width, renderer.domElement.height],
+    maxTextureUnits: gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS),
+    maxFragmentUniformVectors: gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS),
+    meanRgb: mean,
+    stdRgb: std,
+    lumaMean: 0.2126 * mean[0] + 0.7152 * mean[1] + 0.0722 * mean[2],
+    nonBlackCoverage: nonBlack / n,
+    specimenEnabled: material.uniforms.specimenEnabled.value,
+    shaderSourceBytes: globalThis.__bubbleFragPhysical__.length
+  };
+};
 
 // Listeners of the physical UI
 n2Slider.addEventListener("input", () => {

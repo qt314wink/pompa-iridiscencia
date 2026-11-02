@@ -1,0 +1,138 @@
+{
+  "experiment": "G1-renderer-binding",
+  "date": "2026-11-02",
+  "repository": "qt314wink/pompa-iridiscencia",
+  "branch": "feat/iridlab-bubble-membrane-runtime",
+  "head": "88a7d15",
+  "fixtures": {
+    "G1-BASE": {
+      "fixture": "G1-BASE",
+      "webgl": "WebGL2",
+      "drawingBuffer": [
+        400,
+        350
+      ],
+      "maxTextureUnits": 32,
+      "maxFragmentUniformVectors": 4096,
+      "meanRgb": [
+        0.2186556022411756,
+        0.15706913165310368,
+        0.237111820728192
+      ],
+      "stdRgb": [
+        0.21586695622362295,
+        0.08348402274872654,
+        0.13171857670652806
+      ],
+      "lumaMean": 0.17594149745134915,
+      "nonBlackCoverage": 1.0,
+      "specimenEnabled": false,
+      "shaderSourceBytes": 5314,
+      "avgFrameMs": 482.29499999998757,
+      "fps": 2.0734197949388355
+    },
+    "G1-POS": {
+      "fixture": "G1-POS",
+      "webgl": "WebGL2",
+      "drawingBuffer": [
+        400,
+        350
+      ],
+      "maxTextureUnits": 32,
+      "maxFragmentUniformVectors": 4096,
+      "meanRgb": [
+        0.22835215686301877,
+        0.1353620448181447,
+        0.23316442577021695
+      ],
+      "stdRgb": [
+        0.23673061474807275,
+        0.06345369315740639,
+        0.1270228967956655
+      ],
+      "lumaMean": 0.16219307454362453,
+      "nonBlackCoverage": 1.0,
+      "specimenEnabled": true,
+      "shaderSourceBytes": 5314,
+      "avgFrameMs": 490.68333333333334,
+      "fps": 2.0379742535919294
+    },
+    "MOB-PROXY-BASE": {
+      "fixture": "MOB-PROXY-BASE",
+      "webgl": "WebGL2",
+      "drawingBuffer": [
+        320,
+        280
+      ],
+      "avgFrameMs": 466.5433333333582,
+      "fps": 2.1434236190992193,
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 16.0.0) (0x0000C0DE)), SwiftShader driver)"
+    }
+  },
+  "deltas": {
+    "meanRgb": [
+      0.009696554621843156,
+      -0.021707086834958977,
+      -0.003947394957975053
+    ],
+    "lumaMean": -0.013748422907724628,
+    "avgFrameMs": 8.38833333334577,
+    "fps": -0.03544554134690614
+  },
+  "environment": {
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 16.0.0) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "webgl": "WebGL2",
+    "maxTextureSize": 8192,
+    "maxVaryings": 31,
+    "floatLinear": true,
+    "colorBufferFloat": true
+  },
+  "hashes": {
+    "shader.js": "3646487ab8ec2ef191ff1cae86eb4b6340a6bacdd4f1386ce696e4a46901e62e",
+    "app.js": "fa24971de1c206634fc781a1ecf780c4455b560f8e3b636a3467b07776a92ec0",
+    "specimen_manifest": "d4bed5b501f9165e924cca8bd57494ec2611e37775f0aa4c1e8daf9cc43b6aa8",
+    "packed_map": "c8007406155581ffc310c8bdf8265b54490b875139e17181352b288d00ed3aca"
+  },
+  "mapStats": {
+    "mask": {
+      "shape": [
+        384,
+        384
+      ],
+      "mean": 0.8868144648267293,
+      "std": 0.05151795642619921,
+      "min": 0.7490196078431373,
+      "max": 0.9882352941176471
+    },
+    "packed_rg": {
+      "shape": [
+        384,
+        384,
+        3
+      ],
+      "mean": 0.4825095847800926,
+      "std": 0.3684265041782986,
+      "min": 0.0,
+      "max": 0.9882352941176471
+    },
+    "reference_crop": {
+      "shape": [
+        320,
+        320,
+        4
+      ],
+      "mean": 0.3347087067248775,
+      "std": 0.3694206291314492,
+      "min": 0.0,
+      "max": 1.0
+    }
+  },
+  "decision": "PASS-BOUND / CALIBRATION-DEFERRED",
+  "limitations": [
+    "Browser profile ran on SwiftShader software renderer, not a named physical mobile GPU.",
+    "Image-space deltas demonstrate binding response, not physical thickness or spectral calibration.",
+    "No G2 null/negative control was executed in this capture.",
+    "The current shader uses an object-space XY projection of the packed map; UV seam QA remains open."
+  ]
+}
