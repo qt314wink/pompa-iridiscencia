@@ -1,0 +1,205 @@
+{
+  "specimen": "bubble_membrane",
+  "source_archive": "iridlab_bubble_membrane_v0_1.zip",
+  "generator_version": "0.1.0",
+  "status": "generated_requires_real_render_and_artistic_acceptance",
+  "files": {
+    "diagnostic_cpu.png": {
+      "sha256": "c01d7a78b3190e229c3c4dc6df72ba9d0b12c47f2825352295d32923f5e1f4b5",
+      "bytes": 8333,
+      "size": [
+        200,
+        200
+      ],
+      "mode": "RGB",
+      "bands": [
+        "R",
+        "G",
+        "B"
+      ]
+    },
+    "maps/ambient_occlusion.png": {
+      "sha256": "02ed85a6420e0565d3b93276fbf1e84959b16832347d36f0cf5156d1cf352ca9",
+      "bytes": 902,
+      "size": [
+        384,
+        384
+      ],
+      "mode": "L",
+      "bands": [
+        "L"
+      ]
+    },
+    "maps/basecolor.png": {
+      "sha256": "0f0394a1a254e14f292fa779897b2c52985a7758f6a96402436e896ee4970d75",
+      "bytes": 1288,
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGB",
+      "bands": [
+        "R",
+        "G",
+        "B"
+      ]
+    },
+    "maps/cavity.png": {
+      "sha256": "e62cd5ca0f5c83d567440e60961d4bdfcf1c157ef537f9c6890bfa803ea8d5f4",
+      "bytes": 222,
+      "size": [
+        384,
+        384
+      ],
+      "mode": "L",
+      "bands": [
+        "L"
+      ]
+    },
+    "maps/height.png": {
+      "sha256": "2ffbfca08e940455507949c84acb216514d6ed83b4405168c49e6e01c592d6a1",
+      "bytes": 1093,
+      "size": [
+        384,
+        384
+      ],
+      "mode": "I;16",
+      "bands": [
+        "I"
+      ]
+    },
+    "maps/iridescence_mask.png": {
+      "sha256": "97cb72fab94b2cbf24ba65593854bcd10f23fd470dca8fd4b0aa77651897c422",
+      "bytes": 21949,
+      "size": [
+        384,
+        384
+      ],
+      "mode": "L",
+      "bands": [
+        "L"
+      ]
+    },
+    "maps/iridescence_packed_rg.png": {
+      "sha256": "c8007406155581ffc310c8bdf8265b54490b875139e17181352b288d00ed3aca",
+      "bytes": 80900,
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGB",
+      "bands": [
+        "R",
+        "G",
+        "B"
+      ]
+    },
+    "maps/iridescence_thickness_normalized.png": {
+      "sha256": "a62386f9de957b36ee1ac90897a1b8a1fa75f262dae0fb9c0ace24a72982c091",
+      "bytes": 216975,
+      "size": [
+        384,
+        384
+      ],
+      "mode": "I;16",
+      "bands": [
+        "I"
+      ]
+    },
+    "maps/metalness.png": {
+      "sha256": "e62cd5ca0f5c83d567440e60961d4bdfcf1c157ef537f9c6890bfa803ea8d5f4",
+      "bytes": 222,
+      "size": [
+        384,
+        384
+      ],
+      "mode": "L",
+      "bands": [
+        "L"
+      ]
+    },
+    "maps/normal.png": {
+      "sha256": "07fb6681b33aa4a953572adea290bc0e6568b3880f4f825ffcfc8371750d86cd",
+      "bytes": 1286,
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGB",
+      "bands": [
+        "R",
+        "G",
+        "B"
+      ]
+    },
+    "maps/orm.png": {
+      "sha256": "5bd4d1c858e2ae0125f0a4d8587d3497ca2bb794df214ff4b647541146f3b248",
+      "bytes": 23101,
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGB",
+      "bands": [
+        "R",
+        "G",
+        "B"
+      ]
+    },
+    "maps/roughness.png": {
+      "sha256": "4c7fc57d43f234e429284ed7511aea4e81efe769bc16fd7a8caeac7827a204d2",
+      "bytes": 18153,
+      "size": [
+        384,
+        384
+      ],
+      "mode": "L",
+      "bands": [
+        "L"
+      ]
+    },
+    "maps/transmission.png": {
+      "sha256": "02ed85a6420e0565d3b93276fbf1e84959b16832347d36f0cf5156d1cf352ca9",
+      "bytes": 902,
+      "size": [
+        384,
+        384
+      ],
+      "mode": "L",
+      "bands": [
+        "L"
+      ]
+    },
+    "material.json": {
+      "sha256": "d6023fa533912e8e61f20f3d4a5573313f9ffd8f1b8c6c5d4ceeec2f7afcaded",
+      "bytes": 4314
+    },
+    "reference_crop.png": {
+      "sha256": "445c2c73a2ab8bf5e7db5edf818fe5a63e5df2eb0593d6b3cb0d489911393aa7",
+      "bytes": 170083,
+      "size": [
+        320,
+        320
+      ],
+      "mode": "RGBA",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ]
+    },
+    "reference_mask.png": {
+      "sha256": "08575c30a5db6f9fbd466dbac5da3647a59fefb2d9604e87cd3a64bfbe2cbea9",
+      "bytes": 5442,
+      "size": [
+        320,
+        320
+      ],
+      "mode": "L",
+      "bands": [
+        "L"
+      ]
+    }
+  }
+}

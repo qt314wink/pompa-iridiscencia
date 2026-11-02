@@ -1,58 +1,75 @@
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:2be97d07954d416b2424e8635ebe55e3399cd4bffee42b353c57a5066e3a7a4d -->
+
 # G1 Renderer-Binding and WebGL2 Profile Receipt
 
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:129380380995bfa0439c100998dafdc8aeac8690038787cd591192d4edef653e -->
+
 **Date:** 2026-11-02
+
 **Repository:** `qt314wink/pompa-iridiscencia`
-**Branch:** `feat/iridlab-bubble-membrane-runtime`
-**Head:** `88a7d15`
+
+**Base revision:**
+
+<!-- /coderabbit-ai-generated:v1 --> `42a5066518f67000d7432c5d0be0a2390c41397b` plus [`g1_capture_runtime.patch`](g1_capture_runtime.patch)
 
 ## Executive decision
 
-**PASS-BOUND / CALIBRATION-DEFERRED.** The packed specimen map loaded in WebGL2, the G1 binding changed image-space output under the same scene state, and the source/runtime hashes are recorded. This is not physical optical calibration: the browser used SwiftShader software rendering and no named mobile GPU was measured.
+**PENDING / CALIBRATION-DEFERRED.** The packed map loaded and BASE/POS differ in this SwiftShader capture. G1-NULL and G1-NEG have not been captured, and the four controls have not been replayed. The [contract](G1_RENDERER_BINDING_CONTRACT.md) requires both before PASS-BOUND. These image-space metrics are not physical optical calibration.
 
-## WebGL2 environment
+## Capture environment
 
-- Context: WebGL2
-- Renderer: `ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 16.0.0) (0x0000C0DE)), SwiftShader driver)`
-- Vendor: `Google Inc. (Google)`
-- Drawing buffer: 400×350 baseline/POS; 320×280 mobile-like proxy
-- `MAX_TEXTURE_IMAGE_UNITS`: 32
-- `MAX_FRAGMENT_UNIFORM_VECTORS`: 4096
-- `MAX_TEXTURE_SIZE`: 8192
-- `MAX_VARYING_VECTORS`: 31
-- Float-linear texture support: yes
-- Float color-buffer support: yes
+- WebGL2; `ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)`
+- Browser: `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36`
+- Viewport: 1280×900 CSS pixels, device pixel ratio 1; drawing buffer: 400×350.
+- Default scene and controls; BASE, POS, then BASE were read synchronously after toggling. The two BASE metrics matched.
+- Texture units: 32; fragment uniform vectors: 4096.
+- Frame-time p50/p95 and pixel output hashes were not captured in this run. No physical mobile GPU was measured.
 
-## Optical/image-space metrics
+## Linear image-space metrics
 
 | Metric | G1-BASE | G1-POS | Delta POS−BASE |
 |---|---:|---:|---:|
-| Mean R | 0.218656 | 0.228352 | +0.009697 |
-| Mean G | 0.157069 | 0.135362 | -0.021707 |
-| Mean B | 0.237112 | 0.233164 | -0.003947 |
-| Luma mean | 0.175941 | 0.162193 | -0.013748 |
-| Non-black coverage | 1.000 | 1.000 | +0.000 |
+| Mean R | 0.088320 | 0.102435 | +0.014115 |
+| Mean G | 0.027571 | 0.019872 | -0.007700 |
+| Mean B | 0.063969 | 0.061123 | -0.002846 |
+| Luma mean | 0.043114 | 0.040403 | -0.002711 |
+| Luma standard deviation | 0.075302 | 0.069359 | -0.005943 |
+| Non-black coverage (linear luma > 0.02) | 0.227957 | 0.214979 | -0.012979 |
 
-The bound map produces a visible and measurable response: mean R increases by +0.0097, mean G changes by -0.0217, and luma mean changes by -0.0137.
+Per-channel standard deviations and full precision values are in [the receipt](g1_binding_receipt.json). sRGB canvas channels are linearized before statistics are calculated.
 
-## Shader execution profile
+## Reproduce this runtime state
 
-The fragment shader performs an 81-sample spectral integration per fragment, with Fresnel and trigonometric work per wavelength. In this browser lab, the matched 400×350 profile measured **482.29 ms/frame baseline** and **490.68 ms/frame with G1 binding**, approximately **2.07 FPS vs 2.04 FPS**. The reduced 320×280 proxy measured **466.54 ms/frame / 2.14 FPS**, but this is not a mobile-device result.
+Start from a clean checkout of the recorded base revision. Save the patch before checking out that revision, then apply it and copy the source specimen into the Pages root:
 
-The G1 binding adds one packed RG texture sample and map-driven thickness selection; the dominant cost remains the existing 81-iteration spectral loop.
+```bash
+git checkout 42a5066518f67000d7432c5d0be0a2390c41397b
+git apply /path/to/g1_capture_runtime.patch
+mkdir -p docs/specimens
+cp -R specimens/bubble_membrane docs/specimens/
+python3 -m http.server 4173 --directory .
+```
 
-## Hashes
+Open `http://127.0.0.1:4173/docs/index.html` with a WebGL2 browser at the viewport above. Wait for the specimen checkbox to become enabled. Call `window.__bubbleDiagnostics()` with the checkbox off and then on; leave other controls at their defaults. Browser, renderer and color management can affect results. Compare the hashes below before interpreting a replay.
 
 ```text
+app.js: 6fc957a22ed86b1e601a9eb1e3d4056992d0d84cc85f1ce77290825f4fb850f4
 shader.js: 3646487ab8ec2ef191ff1cae86eb4b6340a6bacdd4f1386ce696e4a46901e62e
-app.js: fa24971de1c206634fc781a1ecf780c4455b560f8e3b636a3467b07776a92ec0
 specimen manifest: d4bed5b501f9165e924cca8bd57494ec2611e37775f0aa4c1e8daf9cc43b6aa8
 packed RG map: c8007406155581ffc310c8bdf8265b54490b875139e17181352b288d00ed3aca
+patch: 4c88a07285945e208f2f1432df599dd3df0438e5b294ac960099ddf52bb15ee7
 ```
 
 ## Open gates
 
-- Run G1-NULL and G1-NEG controls.
-- Repeat on named WebGL2 mobile GPUs, not SwiftShader.
-- Add UV orientation/seam fixture; current binding uses object-space XY projection.
-- Optimize the spectral loop only after control images and lower-cost approximations are captured.
-- Do not describe these results as physical thickness, spectral, or device performance calibration.
+- Capture and replay BASE, POS, NULL and NEG with matching source and shader hashes.
+- Record frame-time distributions and output hashes; repeat on named WebGL2 mobile GPUs.
+- Add UV orientation/seam fixture; the current binding uses object-space XY projection.
+- Do not describe image-space results as physical thickness, spectral, or device performance calibration.
+
+
+<!-- /coderabbit-ai-generated:v1 -->

@@ -13,6 +13,15 @@ ROOT = Path(__file__).resolve().parents[1]
 SPECIMEN = ROOT / "specimens" / "bubble_membrane"
 MAPS = SPECIMEN / "maps"
 MANIFEST_PATH = SPECIMEN / "manifest.json"
+PUBLISHED_SPECIMEN = ROOT / "docs" / "specimens" / "bubble_membrane"
+# Independent inventory: do not derive this from the manifest being checked.
+REQUIRED_FILES = {
+    "diagnostic_cpu.png", "material.json", "reference_crop.png", "reference_mask.png",
+    "maps/ambient_occlusion.png", "maps/basecolor.png", "maps/cavity.png",
+    "maps/height.png", "maps/iridescence_mask.png", "maps/iridescence_packed_rg.png",
+    "maps/iridescence_thickness_normalized.png", "maps/metalness.png", "maps/normal.png",
+    "maps/orm.png", "maps/roughness.png", "maps/transmission.png",
+}
 
 
 def sha256(path: Path) -> str:
@@ -33,10 +42,18 @@ def main() -> int:
     manifest = json.loads(MANIFEST_PATH.read_text())
     check(manifest["specimen"] == "bubble_membrane", "manifest identifies bubble_membrane")
 
-    for rel, expected in manifest["files"].items():
+    files = manifest["files"]
+    missing = REQUIRED_FILES - files.keys()
+    extra = files.keys() - REQUIRED_FILES
+    check(not missing and not extra, f"manifest inventory matches (missing: {sorted(missing)}, extra: {sorted(extra)})")
+    check(sha256(PUBLISHED_SPECIMEN / "manifest.json") == sha256(MANIFEST_PATH), "published manifest matches source")
+
+    for rel, expected in files.items():
         path = SPECIMEN / rel
         check(path.is_file(), f"file exists: {rel}")
         check(sha256(path) == expected["sha256"], f"sha256 matches: {rel}")
+        published = PUBLISHED_SPECIMEN / rel
+        check(published.is_file() and sha256(published) == expected["sha256"], f"published copy matches: {rel}")
         if rel.endswith(".png"):
             with Image.open(path) as img:
                 check(list(img.size) == expected["size"], f"dimensions match: {rel}")

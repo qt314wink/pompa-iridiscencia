@@ -12,7 +12,13 @@ The branch is intentionally a reviewable feature branch. The default `main` bran
 
 ## Validate specimen packaging
 
-The validator uses Python and Pillow only:
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:11577cbc20c585de49f110ec8bb9a010854f9312206fc81bab49f08b53b0daed -->
+
+The validator uses Python with the pinned NumPy and Pillow versions in `requirements-dev.txt`:
+
+<!-- /coderabbit-ai-generated:v1 -->
 
 ```bash
 python3 -m venv .venv
@@ -48,7 +54,13 @@ Do not open the HTML with `file://`; browser module and asset policies can make 
 
 ## Available test package
 
-The repository includes `requirements-dev.txt` with the only validation dependency, Pillow. The validator is deterministic and does not need API keys, a database, or a proprietary service. The browser runtime uses the existing CDN imports declared in `docs/index.html`.
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:026fd4219a494835d94c69590de6416a8c98f826cecd0b919f39414bdc4453d5 -->
+
+The repository pins NumPy and Pillow in `requirements-dev.txt`. The validator is deterministic and does not need API keys, a database, or a proprietary service. It also checks that the copies published under `docs/specimens/` match the source manifest; update those copies whenever the source specimen changes. The browser runtime uses the existing CDN imports declared in `docs/index.html`.
+
+<!-- /coderabbit-ai-generated:v1 -->
 
 ## Research and decision records
 
