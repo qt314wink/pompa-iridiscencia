@@ -16,7 +16,7 @@ The branch is intentionally a reviewable feature branch. The default `main` bran
 
 <!-- coderabbit-ai-generated-section:v1:11577cbc20c585de49f110ec8bb9a010854f9312206fc81bab49f08b53b0daed -->
 
-The validator uses Python with the pinned NumPy and Pillow versions in `requirements-dev.txt`:
+The validator uses Python 3.11 or newer with the pinned NumPy and Pillow versions in `requirements-dev.txt`:
 
 <!-- /coderabbit-ai-generated:v1 -->
 

@@ -186,9 +186,9 @@ Physics Degree - University of Oviedo
 
 ## Iridlab bubble-membrane evidence branch
 
-The `feat/iridlab-bubble-membrane-runtime` branch adds the source-preserving `iridlab_bubble_membrane_v0_1` specimen, a browser evidence viewer, and deterministic validation records. It does not claim that the supplied texture maps are physically calibrated or already bound to the existing thin-film simulator.
+The `feat/iridlab-bubble-membrane-runtime` branch adds the source-preserving `iridlab_bubble_membrane_v0_1` specimen, a browser evidence viewer, and deterministic validation records. An optional experimental map binding is present in the simulator; the complete four-control trial and physical calibration remain unverified.
 
-Read the reproducibility guide at [`docs/REPRODUCE_BUBBLE_MEMBRANE.md`](docs/REPRODUCE_BUBBLE_MEMBRANE.md), then run:
+Read the reproducibility guide at [`docs/REPRODUCE_BUBBLE_MEMBRANE.md`](docs/REPRODUCE_BUBBLE_MEMBRANE.md), then run with Python 3.11 or newer:
 
 ```bash
 python3 -m venv .venv
