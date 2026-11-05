@@ -1,0 +1,268 @@
+{
+  "experiment": "G1-renderer-binding",
+  "date": "2026-11-02",
+  "repository": "qt314wink/pompa-iridiscencia",
+  "branch": "feat/iridlab-bubble-membrane-runtime",
+  "head": "42a5066518f67000d7432c5d0be0a2390c41397b",
+  "runtimePatch": {
+    "path": "docs/g1_capture_runtime.patch",
+    "sha256": "4c88a07285945e208f2f1432df599dd3df0438e5b294ac960099ddf52bb15ee7",
+    "publishedAssets": "Copy specimens/bubble_membrane to docs/specimens/bubble_membrane from the recorded head."
+  },
+  "fixtures": {
+    "G1-BASE": {
+      "fixture": "G1-BASE",
+      "webgl": "WebGL2",
+      "drawingBuffer": [
+        400,
+        350
+      ],
+      "meanRgb": [
+        0.08831967720836338,
+        0.027571289599387067,
+        0.06396943763056255
+      ],
+      "stdRgb": [
+        0.20703958622210045,
+        0.041632018770491004,
+        0.11223079572283551
+      ],
+      "lumaMean": 0.04311434309301102,
+      "lumaStd": 0.07530226713344282,
+      "nonBlackCoverage": 0.22795714285714286,
+      "specimenEnabled": false,
+      "specimenLoaded": true,
+      "shaderSourceBytes": 5693
+    },
+    "G1-POS": {
+      "fixture": "G1-POS",
+      "webgl": "WebGL2",
+      "drawingBuffer": [
+        400,
+        350
+      ],
+      "meanRgb": [
+        0.10243474058808502,
+        0.01987162418902465,
+        0.061122953268720075
+      ],
+      "stdRgb": [
+        0.23465664907805125,
+        0.02916197651064538,
+        0.10523352136790261
+      ],
+      "lumaMean": 0.04040288869510344,
+      "lumaStd": 0.06935895334089572,
+      "nonBlackCoverage": 0.21497857142857144,
+      "specimenEnabled": true,
+      "specimenLoaded": true,
+      "shaderSourceBytes": 5693
+    },
+    "G1-NULL": {
+      "fixture": "G1-NULL",
+      "webgl": "WebGL2",
+      "drawingBuffer": [
+        400,
+        350
+      ],
+      "meanRgb": [
+        0.08831967720836338,
+        0.027571289599387067,
+        0.06396943763056255
+      ],
+      "stdRgb": [
+        0.20703958622210045,
+        0.041632018770491004,
+        0.11223079572283551
+      ],
+      "lumaMean": 0.04311434309301102,
+      "lumaStd": 0.07530226713344282,
+      "nonBlackCoverage": 0.22795714285714286,
+      "specimenEnabled": true,
+      "specimenLoaded": true,
+      "shaderSourceBytes": 5693,
+      "map": "1x1 RGBA [0,0,0,255]"
+    },
+    "G1-NEG": {
+      "fixture": "G1-NEG",
+      "webgl": "WebGL2",
+      "drawingBuffer": [
+        400,
+        350
+      ],
+      "meanRgb": [
+        0.12343024437178912,
+        0.030581737068583553,
+        0.08808259471924869
+      ],
+      "stdRgb": [
+        0.2623741554428999,
+        0.03906318672596632,
+        0.1557630502023873
+      ],
+      "lumaMean": 0.05447289164371701,
+      "lumaStd": 0.09450807921508698,
+      "nonBlackCoverage": 0.25880714285714285,
+      "specimenEnabled": true,
+      "specimenLoaded": true,
+      "shaderSourceBytes": 5693,
+      "map": "1x1 RGBA [255,0,0,255]"
+    }
+  },
+  "deltas": {
+    "meanRgb": [
+      0.01411506337972164,
+      -0.0076996654103624156,
+      -0.002846484361842476
+    ],
+    "lumaMean": -0.002711454397907584,
+    "lumaStd": -0.005943313792547103
+  },
+  "environment": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "viewport": [
+      1280,
+      900
+    ],
+    "pixelRatio": 1
+  },
+  "hashes": {
+    "shader.js": "d682d1b3c57053044e7e0ac05fc62ddc46d0a86c5302d5e669b7a63a182d59e2",
+    "app.js": "987c494b0a825a46e71cfb3bcb9eae8ee76ebc569db6c6efad7b93e27f3a54ee",
+    "specimen_manifest": "d4bed5b501f9165e924cca8bd57494ec2611e37775f0aa4c1e8daf9cc43b6aa8",
+    "packed_map": "c8007406155581ffc310c8bdf8265b54490b875139e17181352b288d00ed3aca"
+  },
+  "decision": "PASS-NULL-POS-NEG / UV-SEAM-PASS-BOUND / MOBILE-HARDWARE-BLOCKED",
+  "limitations": [
+    "Browser profile ran on SwiftShader software renderer, not a named physical mobile GPU.",
+    "Image-space deltas demonstrate binding response, not physical thickness or spectral calibration.",
+    "Final-branch diagnostics use corrected linear/capture semantics; earlier pre-rebase pixel metrics are superseded.",
+    "G1-NULL exactly matched BASE at captured pixel-statistic precision; G1-NEG produced a positive luma delta.",
+    "Roll-sweep seam fixture passed at 400x350; elevation/geometry seam QA remains open.",
+    "21-sample approximation improves final-branch proxy timing but shifts luma by -0.015533 versus 81 samples; no error budget has been approved."
+  ],
+  "generatedBy": "CodeRabbit",
+  "controlMatrix": {
+    "G1-BASE": {
+      "claim": "baseline path unchanged",
+      "independentVariable": "specimenEnabled=false",
+      "result": "PASS",
+      "lumaMean": 0.04311434309301102
+    },
+    "G1-POS": {
+      "claim": "source packed map changes output",
+      "independentVariable": "immutable packed RG specimen map",
+      "result": "PASS",
+      "lumaMean": 0.04040288869510344,
+      "lumaDeltaVsBase": -0.002711454397907584
+    },
+    "G1-NULL": {
+      "claim": "neutral map does not create a response",
+      "independentVariable": "1x1 mask=0 neutral texture",
+      "result": "PASS",
+      "maxAbsDeltaVsBase": 0.0
+    },
+    "G1-NEG": {
+      "claim": "altered map remains causally visible",
+      "independentVariable": "1x1 mask=1, normalized thickness=0 texture",
+      "result": "PASS",
+      "lumaDeltaVsBase": 0.01135854855070599
+    }
+  },
+  "seamValidation": {
+    "fixture": "G1-SEAM-SWEEP",
+    "anglesDeg": [
+      0,
+      45,
+      90,
+      135,
+      180,
+      225,
+      270,
+      315
+    ],
+    "projection": "object-space XY packed-map projection",
+    "thresholds": {
+      "maxAdjacentLumaDelta": 0.001,
+      "lumaRange": 0.001
+    },
+    "maxAdjacentLumaDelta": 4.654782271538982e-06,
+    "lumaRange": 4.654782271538982e-06,
+    "nonBlackCoverageAllAngles": 1.0,
+    "result": "PASS-BOUND",
+    "interpretation": "No material seam artifact detected in the roll sweep at this output size; UV orientation is still not fully proven under elevation/geometry remapping."
+  },
+  "spectralDegradation": {
+    "fixture": "G1-POS",
+    "drawingBuffer": [
+      400,
+      350
+    ],
+    "samples": {
+      "81": {
+        "meanRgb": [
+          0.10243474058808502,
+          0.01987162418902465,
+          0.061122953268720075
+        ],
+        "lumaMean": 0.04040288869510344,
+        "lumaStd": 0.06935895334089572,
+        "nonBlackCoverage": 0.21497857142857144,
+        "avgFrameMs": 476.81999999992547,
+        "fps": 2.0972274652912133
+      },
+      "41": {
+        "meanRgb": [
+          0.06588043793116498,
+          0.018037821564390627,
+          0.04967549198767605
+        ],
+        "lumaMean": 0.030493401608483274,
+        "lumaStd": 0.04148442230378901,
+        "nonBlackCoverage": 0.20722142857142858,
+        "avgFrameMs": 268.6300000000745,
+        "fps": 3.722592413355629
+      },
+      "21": {
+        "meanRgb": [
+          0.045427005713207604,
+          0.016964542373720165,
+          0.04264867370577482
+        ],
+        "lumaMean": 0.024870056361842096,
+        "lumaStd": 0.023805799467437407,
+        "nonBlackCoverage": 0.20212857142857144,
+        "avgFrameMs": 165.59000000003726,
+        "fps": 6.039012017632556
+      }
+    },
+    "result": "APPROXIMATION-OPEN",
+    "interpretation": "21 samples reduce measured final-branch frame time by 65.3% versus 81 at 400x350, but shift luma by -0.015533; not promotion-ready without an image-error budget."
+  },
+  "mobileHardware": {
+    "status": "BLOCKED-NO-PHYSICAL-DEVICE-AVAILABLE",
+    "capturedEnvironment": {
+      "userAgent": "Chrome 156 on Linux x86_64",
+      "devicePixelRatio": 1,
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 16.0.0) (0x0000C0DE)), SwiftShader driver)"
+    },
+    "proxy320x280": {
+      "81": {
+        "avgFrameMs": 462.35000000009313,
+        "fps": 2.1628636314476015
+      },
+      "41": {
+        "avgFrameMs": 326.13749999995343,
+        "fps": 3.0661914069990197
+      },
+      "21": {
+        "avgFrameMs": 198.42500000004657,
+        "fps": 5.039687539371376
+      }
+    },
+    "limitation": "These are sandbox SwiftShader measurements and a reduced-resolution proxy, not actual mobile WebGL2 hardware evidence."
+  },
+  "headAfterControls": "9b23104 (rebased local; pending push)"
+}

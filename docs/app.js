@@ -136,6 +136,13 @@ const uniforms = {
   e0_nm: { value: 50.0 },
   eavg_nm: { value: 900.0 },
 
+  // G1 specimen binding (off by default; enable with ?g1=1 or the checkbox)
+  specimenEnabled: { value: false },
+  specimenPackedTex: { value: new THREE.DataTexture(new Uint8Array([255, 128, 0, 255]), 1, 1, THREE.RGBAFormat) },
+  specimenThicknessMinNm: { value: 120.0 },
+  specimenThicknessMaxNm: { value: 830.0 },
+  spectralSampleCount: { value: 81 },
+
   // Reflectance effects
   showTransmission: { value: true }
 };
@@ -236,6 +243,25 @@ material.uniforms.wlEnd   = { value: WL_END };
 material.uniforms.stepNm  = { value: STEP };
 material.uniforms.kNorm   = { value: k_norm };
 
+// G1 specimen binding: keep a complete placeholder until the map has loaded.
+material.uniforms.specimenPackedTex.value.needsUpdate = true;
+let specimenLoaded = false;
+const specimenRequested = new URLSearchParams(location.search).get('g1') === '1';
+const specimenPackedTex = new THREE.TextureLoader().load('./specimens/bubble_membrane/maps/iridescence_packed_rg.png',
+  () => {
+    specimenLoaded = true;
+    material.uniforms.specimenPackedTex.value = specimenPackedTex;
+    specimenToggle.disabled = false;
+    updateSpecimenState();
+  }, undefined, () => {
+    specimenState.textContent = 'G1 specimen unavailable';
+  });
+specimenPackedTex.colorSpace = THREE.NoColorSpace;
+specimenPackedTex.wrapS = THREE.ClampToEdgeWrapping;
+specimenPackedTex.wrapT = THREE.ClampToEdgeWrapping;
+specimenPackedTex.minFilter = THREE.LinearFilter;
+specimenPackedTex.magFilter = THREE.LinearFilter;
+
 
 // === CONTROL OF THE SIMULATION WITH THE PHYSICAL PARAMETERS =========================
 // Link the sliders of the UI with the corresponding uniforms of the shader
@@ -254,6 +280,8 @@ const e0Val   = document.getElementById("e0Val");
 const eavgVal = document.getElementById("eavgVal");
 const lambdaVal = document.getElementById("lambdaVal");
 const deslambdaVal = document.getElementById("deslambdaVal");
+const specimenToggle = document.getElementById("specimenToggle");
+const specimenState = document.getElementById("specimenState");
 
 // Matching the initial values of the UI with the initial values of the shader uniforms
 n2Val.textContent   = Number(n2Slider.value).toFixed(2);
@@ -261,6 +289,92 @@ e0Val.textContent   = Number(e0Slider.value).toFixed(0);
 eavgVal.textContent = Number(eavgSlider.value).toFixed(0);
 lambdaVal.textContent = Number(lambdaSlider.value).toFixed(0);
 deslambdaVal.textContent = Number(deslambdaSlider.value).toFixed(0);
+specimenToggle.checked = specimenRequested;
+specimenToggle.disabled = true;
+specimenState.textContent = 'G1 specimen loading';
+
+function updateSpecimenState() {
+  material.uniforms.specimenEnabled.value = specimenLoaded && specimenToggle.checked;
+  specimenState.textContent = material.uniforms.specimenEnabled.value ? 'G1 specimen bound' : 'baseline shader';
+}
+specimenToggle.addEventListener('change', updateSpecimenState);
+
+// The shader and renderer output sRGB-encoded canvas values.
+function srgbToLinear(value) {
+  return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+}
+
+window.__bubbleDiagnostics = () => {
+  renderer.render(scene, camera);
+  const gl = renderer.getContext();
+  const pixels = new Uint8Array(renderer.domElement.width * renderer.domElement.height * 4);
+  gl.readPixels(0, 0, renderer.domElement.width, renderer.domElement.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+  let sum = [0, 0, 0], sum2 = [0, 0, 0], lumaSum = 0, lumaSum2 = 0, nonBlack = 0;
+  const n = renderer.domElement.width * renderer.domElement.height;
+  for (let i = 0; i < n; i++) {
+    const r = srgbToLinear(pixels[i * 4] / 255), g = srgbToLinear(pixels[i * 4 + 1] / 255), b = srgbToLinear(pixels[i * 4 + 2] / 255);
+    const y = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    lumaSum += y;
+    lumaSum2 += y * y;
+    if (y > 0.02) nonBlack++;
+    for (const [j, v] of [r, g, b].entries()) { sum[j] += v; sum2[j] += v * v; }
+  }
+  const mean = sum.map(v => v / n);
+  const std = sum2.map((v, j) => Math.sqrt(Math.max(0, v / n - mean[j] * mean[j])));
+  const lumaMean = lumaSum / n;
+  return {
+    fixture: globalThis.__bubbleFixture || (material.uniforms.specimenEnabled.value ? 'G1-POS' : 'G1-BASE'),
+    webgl: gl instanceof WebGL2RenderingContext ? 'WebGL2' : 'WebGL1',
+    drawingBuffer: [renderer.domElement.width, renderer.domElement.height],
+    maxTextureUnits: gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS),
+    maxFragmentUniformVectors: gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS),
+    meanRgb: mean,
+    stdRgb: std,
+    lumaMean,
+    lumaStd: Math.sqrt(Math.max(0, lumaSum2 / n - lumaMean * lumaMean)),
+    nonBlackCoverage: nonBlack / n,
+    specimenEnabled: material.uniforms.specimenEnabled.value,
+    specimenLoaded,
+    shaderSourceBytes: globalThis.__bubbleFragPhysical__.length
+  };
+};
+
+function makeFixtureTexture(r, g) {
+  const tex = new THREE.DataTexture(new Uint8Array([r, g, 0, 255]), 1, 1, THREE.RGBAFormat);
+  tex.needsUpdate = true;
+  tex.colorSpace = THREE.NoColorSpace;
+  tex.wrapS = THREE.ClampToEdgeWrapping;
+  tex.wrapT = THREE.ClampToEdgeWrapping;
+  tex.minFilter = THREE.NearestFilter;
+  tex.magFilter = THREE.NearestFilter;
+  return tex;
+}
+
+globalThis.__bubbleFixture = material.uniforms.specimenEnabled.value ? 'G1-POS' : 'G1-BASE';
+window.__bubbleControls = {
+  setSampleCount(count) {
+    material.uniforms.spectralSampleCount.value = Math.max(2, Math.min(81, Math.round(count)));
+    return material.uniforms.spectralSampleCount.value;
+  },
+  setFixture(name) {
+    if (name === 'BASE') { material.uniforms.specimenEnabled.value = false; material.uniforms.specimenPackedTex.value = specimenPackedTex; }
+    if (name === 'POS') { material.uniforms.specimenEnabled.value = true; material.uniforms.specimenPackedTex.value = specimenPackedTex; }
+    if (name === 'NULL') { material.uniforms.specimenEnabled.value = true; material.uniforms.specimenPackedTex.value = makeFixtureTexture(0, 0); }
+    if (name === 'NEG') { material.uniforms.specimenEnabled.value = true; material.uniforms.specimenPackedTex.value = makeFixtureTexture(255, 0); }
+    globalThis.__bubbleFixture = `G1-${name}`;
+    return globalThis.__bubbleFixture;
+  },
+  setRoll(degrees) { rollDeg = Number(degrees); rollSlider.value = String(degrees); setCameraFromSpherical(); },
+  setTheta(degrees) { thetaDeg = Number(degrees); thetaSlider.value = String(degrees); setCameraFromSpherical(); },
+  capture() { renderer.render(scene, camera); return window.__bubbleDiagnostics(); },
+  rotationSweep(angles = [0, 45, 90, 135, 180, 225, 270, 315]) {
+    const rows = angles.map(angle => { this.setRoll(angle); return { angle, ...this.capture() }; });
+    this.setRoll(0);
+    const lumas = rows.map(r => r.lumaMean);
+    const deltas = lumas.slice(1).map((v, i) => Math.abs(v - lumas[i]));
+    return { fixture: 'G1-SEAM-SWEEP', rows, maxAdjacentLumaDelta: Math.max(...deltas), lumaRange: Math.max(...lumas) - Math.min(...lumas) };
+  }
+};
 
 // Listeners of the physical UI
 n2Slider.addEventListener("input", () => {
