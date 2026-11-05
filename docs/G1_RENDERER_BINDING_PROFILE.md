@@ -1,100 +1,71 @@
-<!-- coderabbit-ai-generated:v1 -->
-
-<!-- coderabbit-ai-generated-section:v1:2be97d07954d416b2424e8635ebe55e3399cd4bffee42b353c57a5066e3a7a4d -->
-
 # G1 Renderer-Binding and WebGL2 Profile Receipt
 
-<!-- coderabbit-ai-generated:v1 -->
-
-<!-- coderabbit-ai-generated-section:v1:129380380995bfa0439c100998dafdc8aeac8690038787cd591192d4edef653e -->
-
-**Date:** 2026-11-02
-
+**Date:** 2026-11-05
 **Repository:** `qt314wink/pompa-iridiscencia`
-
-**Base revision:**
-
-<!-- /coderabbit-ai-generated:v1 --> `42a5066518f67000d7432c5d0be0a2390c41397b` plus [`g1_capture_runtime.patch`](g1_capture_runtime.patch)
+**Branch:** `feat/iridlab-bubble-membrane-runtime`
+**Local head:** `9b23104` before final receipt refresh
 
 ## Executive decision
 
-**PENDING / CALIBRATION-DEFERRED.** The packed map loaded and BASE/POS differ in this SwiftShader capture. G1-NULL and G1-NEG have not been captured, and the four controls have not been replayed. The [contract](G1_RENDERER_BINDING_CONTRACT.md) requires both before PASS-BOUND. These image-space metrics are not physical optical calibration.
+**PASS-NULL-POS-NEG / UV-SEAM-PASS-BOUND / MOBILE-HARDWARE-BLOCKED.** The packed specimen map loads in WebGL2, the NULL and NEG controls distinguish branch activation from map causality, and the roll-sweep seam fixture is bounded at the captured output size. No physical mobile GPU was available, so mobile promotion remains blocked.
 
-## Capture environment
+## WebGL2 environment
 
-- WebGL2; `ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)`
-- Browser: `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36`
-- Viewport: 1280×900 CSS pixels, device pixel ratio 1; drawing buffer: 400×350.
-- Default scene and controls; BASE, POS, then BASE were read synchronously after toggling. The two BASE metrics matched.
-- Texture units: 32; fragment uniform vectors: 4096.
-- Frame-time p50/p95 and pixel output hashes were not captured in this run. No physical mobile GPU was measured.
+- Context: WebGL2
+- Renderer: `ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 16.0.0) (0x0000C0DE)), SwiftShader driver)`
+- User agent: Chrome 156 on Linux x86_64
+- Device pixel ratio: 1
+- Drawing buffer: 400×350 for optical controls; 320×280 proxy for reduced-resolution timing
+- `MAX_TEXTURE_IMAGE_UNITS`: 32
+- `MAX_FRAGMENT_UNIFORM_VECTORS`: 4096
+- `MAX_TEXTURE_SIZE`: 8192
+- `MAX_VARYING_VECTORS`: 31
 
-## Linear image-space metrics
+## Final-branch control matrix
 
-| Metric | G1-BASE | G1-POS | Delta POS−BASE |
-|---|---:|---:|---:|
-| Mean R | 0.088320 | 0.102435 | +0.014115 |
-| Mean G | 0.027571 | 0.019872 | -0.007700 |
-| Mean B | 0.063969 | 0.061123 | -0.002846 |
-| Luma mean | 0.043114 | 0.040403 | -0.002711 |
-| Luma standard deviation | 0.075302 | 0.069359 | -0.005943 |
-| Non-black coverage (linear luma > 0.02) | 0.227957 | 0.214979 | -0.012979 |
+| Fixture | Luma mean | Non-black coverage | Result |
+|---|---:|---:|---|
+| G1-BASE | 0.043114 | 0.227957 | PASS |
+| G1-POS | 0.040403 | 0.214979 | PASS |
+| G1-NULL | 0.043114 | 0.227957 | PASS; exact BASE match |
+| G1-NEG | 0.054473 | 0.258807 | PASS; causal response |
 
-Per-channel standard deviations and full precision values are in [the receipt](g1_binding_receipt.json). sRGB canvas channels are linearized before statistics are calculated.
+The final branch uses the corrected linear/capture diagnostics from the remote integration commits. Earlier pre-rebase pixel metrics are superseded and must not be compared directly with this table.
 
-## Reproduce this runtime state
+## UV/seam validation
 
-Start from a clean checkout of the recorded base revision. Save the patch before checking out that revision, then apply it and copy the source specimen into the Pages root:
+The positive specimen map was rendered at roll angles 0°, 45°, 90°, 135°, 180°, 225°, 270°, and 315° with fixed physical controls. Maximum adjacent luma delta and total luma range were both `0.000004654782`, below the bounded `0.001` threshold. This is a **PASS-BOUND** roll-sweep result, not complete UV proof. Elevation and geometry-remapping seam tests remain open.
+
+## Spectral degradation
+
+The runtime exposes `spectralSampleCount` and was measured at 400×350 under the same final branch:
+
+| Samples | Mean RGB | Luma mean | Avg frame | FPS |
+|---:|---|---:|---:|---:|
+| 81 | 0.102435 / 0.019872 / 0.061123 | 0.040403 | 476.82 ms | 2.10 |
+| 41 | 0.065880 / 0.018038 / 0.049675 | 0.030493 | 268.63 ms | 3.72 |
+| 21 | 0.045427 / 0.016965 / 0.042649 | 0.024870 | 165.59 ms | 6.04 |
+
+Twenty-one samples reduce measured final-branch frame time by 65.3% versus 81, but shift luma by `-0.015533`. This is an approximation candidate only; no image-error budget has been approved.
+
+## Mobile hardware gate
+
+No physical mobile WebGL2 device was available. A 320×280 SwiftShader proxy measured 2.16 FPS at 81 samples, 3.07 FPS at 41 samples, and 5.04 FPS at 21 samples. These are not actual mobile-device results. Repeat on named Android and iOS WebGL2 hardware before promoting a mobile fallback.
+
+## Reproduction
 
 ```bash
-git checkout 42a5066518f67000d7432c5d0be0a2390c41397b
-git apply /path/to/g1_capture_runtime.patch
-mkdir -p docs/specimens
-cp -R specimens/bubble_membrane docs/specimens/
+python3 tests/validate_specimen.py
 python3 -m http.server 4173 --directory .
+# Open /docs/index.html
+# Toggle “G1 specimen map” or use window.__bubbleControls in the browser console.
 ```
 
-Open `http://127.0.0.1:4173/docs/index.html` with a WebGL2 browser at the viewport above. Wait for the specimen checkbox to become enabled. Call `window.__bubbleDiagnostics()` with the checkbox off and then on; leave other controls at their defaults. Browser, renderer and color management can affect results. Compare the hashes below before interpreting a replay.
-
-```text
-app.js: 6fc957a22ed86b1e601a9eb1e3d4056992d0d84cc85f1ce77290825f4fb850f4
-shader.js: 3646487ab8ec2ef191ff1cae86eb4b6340a6bacdd4f1386ce696e4a46901e62e
-specimen manifest: d4bed5b501f9165e924cca8bd57494ec2611e37775f0aa4c1e8daf9cc43b6aa8
-packed RG map: c8007406155581ffc310c8bdf8265b54490b875139e17181352b288d00ed3aca
-patch: 4c88a07285945e208f2f1432df599dd3df0438e5b294ac960099ddf52bb15ee7
-```
+Machine-readable evidence: `docs/g1_binding_receipt.json`. Control details: `docs/G1_CONTROL_MATRIX.md`.
 
 ## Open gates
 
-- Capture and replay BASE, POS, NULL and NEG with matching source and shader hashes.
-- Record frame-time distributions and output hashes; repeat on named WebGL2 mobile GPUs.
-- Add UV orientation/seam fixture; the current binding uses object-space XY projection.
-- Do not describe image-space results as physical thickness, spectral, or device performance calibration.
-
-
-<!-- /coderabbit-ai-generated:v1 -->
-## Control matrix and seam result
-
-The completed browser control matrix is recorded in `docs/G1_CONTROL_MATRIX.md` and `docs/g1_binding_receipt.json`.
-
-- **G1-NULL:** neutral 1×1 map `[0,0,0,255]`; exact pixel-statistic match to G1-BASE.
-- **G1-NEG:** altered 1×1 map `[255,0,0,255]`; luma mean `0.192695` versus BASE `0.175941`, confirming causal response.
-- **G1-SEAM-SWEEP:** roll angles 0–315° in 45° increments; maximum adjacent luma delta `0.000006076857`, luma range `0.000006363126`; bounded PASS at threshold `0.001`.
-
-The seam result is limited to the roll sweep at 400×350. Elevation and geometry-remapping validation remain open.
-
-## Spectral degradation sweep
-
-The runtime now exposes `spectralSampleCount` for controlled 81/41/21 comparisons. At 400×350 on the same SwiftShader browser lab:
-
-| Samples | Avg frame | FPS | Luma mean |
-|---:|---:|---:|---:|
-| 81 | 497.29 ms | 2.01 | 0.162193 |
-| 41 | 313.11 ms | 3.19 | 0.155580 |
-| 21 | 191.65 ms | 5.22 | 0.150321 |
-
-The 21-sample approximation reduces proxy frame time by 61.4% but shifts luma by `-0.011873`; it is not promoted without an approved image-error budget.
-
-## Actual mobile hardware gate
-
-No physical mobile WebGL2 device was available. The browser reported Chrome 156 on Linux x86_64 with ANGLE SwiftShader. The 320×280 measurements in the receipt are reduced-resolution proxies only and must not be presented as device results.
+- Run elevation/geometry-remapping seam fixtures.
+- Capture on named physical WebGL2 mobile GPUs.
+- Define an image-error budget before promoting 41- or 21-sample approximations.
+- Preserve the 81-sample path as the reference fixture.

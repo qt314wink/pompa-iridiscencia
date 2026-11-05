@@ -17,8 +17,6 @@
         400,
         350
       ],
-      "maxTextureUnits": 32,
-      "maxFragmentUniformVectors": 4096,
       "meanRgb": [
         0.08831967720836338,
         0.027571289599387067,
@@ -34,7 +32,7 @@
       "nonBlackCoverage": 0.22795714285714286,
       "specimenEnabled": false,
       "specimenLoaded": true,
-      "shaderSourceBytes": 5314
+      "shaderSourceBytes": 5693
     },
     "G1-POS": {
       "fixture": "G1-POS",
@@ -43,8 +41,6 @@
         400,
         350
       ],
-      "maxTextureUnits": 32,
-      "maxFragmentUniformVectors": 4096,
       "meanRgb": [
         0.10243474058808502,
         0.01987162418902465,
@@ -60,7 +56,7 @@
       "nonBlackCoverage": 0.21497857142857144,
       "specimenEnabled": true,
       "specimenLoaded": true,
-      "shaderSourceBytes": 5314
+      "shaderSourceBytes": 5693
     },
     "G1-NULL": {
       "fixture": "G1-NULL",
@@ -70,18 +66,20 @@
         350
       ],
       "meanRgb": [
-        0.2186556022411756,
-        0.15706913165310368,
-        0.237111820728192
+        0.08831967720836338,
+        0.027571289599387067,
+        0.06396943763056255
       ],
       "stdRgb": [
-        0.21586695622362295,
-        0.08348402274872654,
-        0.13171857670652806
+        0.20703958622210045,
+        0.041632018770491004,
+        0.11223079572283551
       ],
-      "lumaMean": 0.17594149745134915,
-      "nonBlackCoverage": 1.0,
+      "lumaMean": 0.04311434309301102,
+      "lumaStd": 0.07530226713344282,
+      "nonBlackCoverage": 0.22795714285714286,
       "specimenEnabled": true,
+      "specimenLoaded": true,
       "shaderSourceBytes": 5693,
       "map": "1x1 RGBA [0,0,0,255]"
     },
@@ -93,18 +91,20 @@
         350
       ],
       "meanRgb": [
-        0.249455406162745,
-        0.16872000000050583,
-        0.263055826330413
+        0.12343024437178912,
+        0.030581737068583553,
+        0.08808259471924869
       ],
       "stdRgb": [
-        0.2597749804847065,
-        0.08427209188001378,
-        0.17253314736048828
+        0.2623741554428999,
+        0.03906318672596632,
+        0.1557630502023873
       ],
-      "lumaMean": 0.19269539401161717,
-      "nonBlackCoverage": 1.0,
+      "lumaMean": 0.05447289164371701,
+      "lumaStd": 0.09450807921508698,
+      "nonBlackCoverage": 0.25880714285714285,
       "specimenEnabled": true,
+      "specimenLoaded": true,
       "shaderSourceBytes": 5693,
       "map": "1x1 RGBA [255,0,0,255]"
     }
@@ -130,7 +130,7 @@
   },
   "hashes": {
     "shader.js": "d682d1b3c57053044e7e0ac05fc62ddc46d0a86c5302d5e669b7a63a182d59e2",
-    "app.js": "34b9a54678ea6ee3498964043edbfe711945744505e25e313b72453e7ec145c2",
+    "app.js": "987c494b0a825a46e71cfb3bcb9eae8ee76ebc569db6c6efad7b93e27f3a54ee",
     "specimen_manifest": "d4bed5b501f9165e924cca8bd57494ec2611e37775f0aa4c1e8daf9cc43b6aa8",
     "packed_map": "c8007406155581ffc310c8bdf8265b54490b875139e17181352b288d00ed3aca"
   },
@@ -138,9 +138,10 @@
   "limitations": [
     "Browser profile ran on SwiftShader software renderer, not a named physical mobile GPU.",
     "Image-space deltas demonstrate binding response, not physical thickness or spectral calibration.",
+    "Final-branch diagnostics use corrected linear/capture semantics; earlier pre-rebase pixel metrics are superseded.",
     "G1-NULL exactly matched BASE at captured pixel-statistic precision; G1-NEG produced a positive luma delta.",
     "Roll-sweep seam fixture passed at 400x350; elevation/geometry seam QA remains open.",
-    "21-sample approximation improves proxy timing but shifts luma by -0.01187 versus 81 samples; no error budget has been approved."
+    "21-sample approximation improves final-branch proxy timing but shifts luma by -0.015533 versus 81 samples; no error budget has been approved."
   ],
   "generatedBy": "CodeRabbit",
   "controlMatrix": {
@@ -148,13 +149,14 @@
       "claim": "baseline path unchanged",
       "independentVariable": "specimenEnabled=false",
       "result": "PASS",
-      "maxAbsDeltaVsNull": 0.0
+      "lumaMean": 0.04311434309301102
     },
     "G1-POS": {
       "claim": "source packed map changes output",
       "independentVariable": "immutable packed RG specimen map",
       "result": "PASS",
-      "lumaMean": 0.16219307454362453
+      "lumaMean": 0.04040288869510344,
+      "lumaDeltaVsBase": -0.002711454397907584
     },
     "G1-NULL": {
       "claim": "neutral map does not create a response",
@@ -166,7 +168,7 @@
       "claim": "altered map remains causally visible",
       "independentVariable": "1x1 mask=1, normalized thickness=0 texture",
       "result": "PASS",
-      "lumaDeltaVsBase": 0.016753896560268017
+      "lumaDeltaVsBase": 0.01135854855070599
     }
   },
   "seamValidation": {
@@ -186,8 +188,8 @@
       "maxAdjacentLumaDelta": 0.001,
       "lumaRange": 0.001
     },
-    "maxAdjacentLumaDelta": 6.076857159864613e-06,
-    "lumaRange": 6.36312604951339e-06,
+    "maxAdjacentLumaDelta": 4.654782271538982e-06,
+    "lumaRange": 4.654782271538982e-06,
     "nonBlackCoverageAllAngles": 1.0,
     "result": "PASS-BOUND",
     "interpretation": "No material seam artifact detected in the roll sweep at this output size; UV orientation is still not fully proven under elevation/geometry remapping."
@@ -201,37 +203,43 @@
     "samples": {
       "81": {
         "meanRgb": [
-          0.22835215686301877,
-          0.1353620448181447,
-          0.23316442577021695
+          0.10243474058808502,
+          0.01987162418902465,
+          0.061122953268720075
         ],
-        "lumaMean": 0.16219307454362453,
-        "avgFrameMs": 497.28666666659217,
-        "fps": 2.0109125521164515
+        "lumaMean": 0.04040288869510344,
+        "lumaStd": 0.06935895334089572,
+        "nonBlackCoverage": 0.21497857142857144,
+        "avgFrameMs": 476.81999999992547,
+        "fps": 2.0972274652912133
       },
       "41": {
         "meanRgb": [
-          0.20244341736723245,
-          0.13492689075652012,
-          0.22216817927162516
+          0.06588043793116498,
+          0.018037821564390627,
+          0.04967549198767605
         ],
-        "lumaMean": 0.15557972534474815,
-        "avgFrameMs": 313.11333333340787,
-        "fps": 3.193731769113725
+        "lumaMean": 0.030493401608483274,
+        "lumaStd": 0.04148442230378901,
+        "nonBlackCoverage": 0.20722142857142858,
+        "avgFrameMs": 268.6300000000745,
+        "fps": 3.722592413355629
       },
       "21": {
         "meanRgb": [
-          0.18438941176500276,
-          0.13373666666685657,
-          0.21427815126042785
+          0.045427005713207604,
+          0.016964542373720165,
+          0.04264867370577482
         ],
-        "lumaMean": 0.1503205354623783,
-        "avgFrameMs": 191.65333333338302,
-        "fps": 5.217754278557156
+        "lumaMean": 0.024870056361842096,
+        "lumaStd": 0.023805799467437407,
+        "nonBlackCoverage": 0.20212857142857144,
+        "avgFrameMs": 165.59000000003726,
+        "fps": 6.039012017632556
       }
     },
     "result": "APPROXIMATION-OPEN",
-    "interpretation": "21 samples reduce measured proxy frame time by 61.4% versus 81 but shift luma by -0.01187; not promotion-ready without an image-error budget."
+    "interpretation": "21 samples reduce measured final-branch frame time by 65.3% versus 81 at 400x350, but shift luma by -0.015533; not promotion-ready without an image-error budget."
   },
   "mobileHardware": {
     "status": "BLOCKED-NO-PHYSICAL-DEVICE-AVAILABLE",
@@ -242,19 +250,19 @@
     },
     "proxy320x280": {
       "81": {
-        "avgFrameMs": 476.12999999988824,
-        "fps": 2.1002667338756953
+        "avgFrameMs": 462.35000000009313,
+        "fps": 2.1628636314476015
       },
       "41": {
-        "avgFrameMs": 318.47999999988826,
-        "fps": 3.139914594324136
+        "avgFrameMs": 326.13749999995343,
+        "fps": 3.0661914069990197
       },
       "21": {
-        "avgFrameMs": 193.2699999999255,
-        "fps": 5.174108759768125
+        "avgFrameMs": 198.42500000004657,
+        "fps": 5.039687539371376
       }
     },
     "limitation": "These are sandbox SwiftShader measurements and a reduced-resolution proxy, not actual mobile WebGL2 hardware evidence."
   },
-  "headAfterControls": "working-tree pending commit"
+  "headAfterControls": "9b23104 (rebased local; pending push)"
 }
