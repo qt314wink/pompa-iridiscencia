@@ -63,10 +63,50 @@
       "shaderSourceBytes": 5314
     },
     "G1-NULL": {
-      "status": "not captured"
+      "fixture": "G1-NULL",
+      "webgl": "WebGL2",
+      "drawingBuffer": [
+        400,
+        350
+      ],
+      "meanRgb": [
+        0.2186556022411756,
+        0.15706913165310368,
+        0.237111820728192
+      ],
+      "stdRgb": [
+        0.21586695622362295,
+        0.08348402274872654,
+        0.13171857670652806
+      ],
+      "lumaMean": 0.17594149745134915,
+      "nonBlackCoverage": 1.0,
+      "specimenEnabled": true,
+      "shaderSourceBytes": 5693,
+      "map": "1x1 RGBA [0,0,0,255]"
     },
     "G1-NEG": {
-      "status": "not captured"
+      "fixture": "G1-NEG",
+      "webgl": "WebGL2",
+      "drawingBuffer": [
+        400,
+        350
+      ],
+      "meanRgb": [
+        0.249455406162745,
+        0.16872000000050583,
+        0.263055826330413
+      ],
+      "stdRgb": [
+        0.2597749804847065,
+        0.08427209188001378,
+        0.17253314736048828
+      ],
+      "lumaMean": 0.19269539401161717,
+      "nonBlackCoverage": 1.0,
+      "specimenEnabled": true,
+      "shaderSourceBytes": 5693,
+      "map": "1x1 RGBA [255,0,0,255]"
     }
   },
   "deltas": {
@@ -89,18 +129,132 @@
     "pixelRatio": 1
   },
   "hashes": {
-    "shader.js": "3646487ab8ec2ef191ff1cae86eb4b6340a6bacdd4f1386ce696e4a46901e62e",
-    "app.js": "6fc957a22ed86b1e601a9eb1e3d4056992d0d84cc85f1ce77290825f4fb850f4",
+    "shader.js": "d682d1b3c57053044e7e0ac05fc62ddc46d0a86c5302d5e669b7a63a182d59e2",
+    "app.js": "34b9a54678ea6ee3498964043edbfe711945744505e25e313b72453e7ec145c2",
     "specimen_manifest": "d4bed5b501f9165e924cca8bd57494ec2611e37775f0aa4c1e8daf9cc43b6aa8",
     "packed_map": "c8007406155581ffc310c8bdf8265b54490b875139e17181352b288d00ed3aca"
   },
-  "decision": "PENDING / CALIBRATION-DEFERRED",
+  "decision": "PASS-NULL-POS-NEG / UV-SEAM-PASS-BOUND / MOBILE-HARDWARE-BLOCKED",
   "limitations": [
-    "G1-NULL and G1-NEG have not been captured; no four-control replay has been completed.",
-    "SwiftShader software rendering; no named physical mobile GPU was measured.",
-    "Image-space metrics are not physical optical calibration.",
-    "Object-space XY projection; UV seam QA remains open.",
-    "Frame-time p50/p95 and pixel output hashes were not captured in this run."
+    "Browser profile ran on SwiftShader software renderer, not a named physical mobile GPU.",
+    "Image-space deltas demonstrate binding response, not physical thickness or spectral calibration.",
+    "G1-NULL exactly matched BASE at captured pixel-statistic precision; G1-NEG produced a positive luma delta.",
+    "Roll-sweep seam fixture passed at 400x350; elevation/geometry seam QA remains open.",
+    "21-sample approximation improves proxy timing but shifts luma by -0.01187 versus 81 samples; no error budget has been approved."
   ],
-  "generatedBy": "CodeRabbit"
+  "generatedBy": "CodeRabbit",
+  "controlMatrix": {
+    "G1-BASE": {
+      "claim": "baseline path unchanged",
+      "independentVariable": "specimenEnabled=false",
+      "result": "PASS",
+      "maxAbsDeltaVsNull": 0.0
+    },
+    "G1-POS": {
+      "claim": "source packed map changes output",
+      "independentVariable": "immutable packed RG specimen map",
+      "result": "PASS",
+      "lumaMean": 0.16219307454362453
+    },
+    "G1-NULL": {
+      "claim": "neutral map does not create a response",
+      "independentVariable": "1x1 mask=0 neutral texture",
+      "result": "PASS",
+      "maxAbsDeltaVsBase": 0.0
+    },
+    "G1-NEG": {
+      "claim": "altered map remains causally visible",
+      "independentVariable": "1x1 mask=1, normalized thickness=0 texture",
+      "result": "PASS",
+      "lumaDeltaVsBase": 0.016753896560268017
+    }
+  },
+  "seamValidation": {
+    "fixture": "G1-SEAM-SWEEP",
+    "anglesDeg": [
+      0,
+      45,
+      90,
+      135,
+      180,
+      225,
+      270,
+      315
+    ],
+    "projection": "object-space XY packed-map projection",
+    "thresholds": {
+      "maxAdjacentLumaDelta": 0.001,
+      "lumaRange": 0.001
+    },
+    "maxAdjacentLumaDelta": 6.076857159864613e-06,
+    "lumaRange": 6.36312604951339e-06,
+    "nonBlackCoverageAllAngles": 1.0,
+    "result": "PASS-BOUND",
+    "interpretation": "No material seam artifact detected in the roll sweep at this output size; UV orientation is still not fully proven under elevation/geometry remapping."
+  },
+  "spectralDegradation": {
+    "fixture": "G1-POS",
+    "drawingBuffer": [
+      400,
+      350
+    ],
+    "samples": {
+      "81": {
+        "meanRgb": [
+          0.22835215686301877,
+          0.1353620448181447,
+          0.23316442577021695
+        ],
+        "lumaMean": 0.16219307454362453,
+        "avgFrameMs": 497.28666666659217,
+        "fps": 2.0109125521164515
+      },
+      "41": {
+        "meanRgb": [
+          0.20244341736723245,
+          0.13492689075652012,
+          0.22216817927162516
+        ],
+        "lumaMean": 0.15557972534474815,
+        "avgFrameMs": 313.11333333340787,
+        "fps": 3.193731769113725
+      },
+      "21": {
+        "meanRgb": [
+          0.18438941176500276,
+          0.13373666666685657,
+          0.21427815126042785
+        ],
+        "lumaMean": 0.1503205354623783,
+        "avgFrameMs": 191.65333333338302,
+        "fps": 5.217754278557156
+      }
+    },
+    "result": "APPROXIMATION-OPEN",
+    "interpretation": "21 samples reduce measured proxy frame time by 61.4% versus 81 but shift luma by -0.01187; not promotion-ready without an image-error budget."
+  },
+  "mobileHardware": {
+    "status": "BLOCKED-NO-PHYSICAL-DEVICE-AVAILABLE",
+    "capturedEnvironment": {
+      "userAgent": "Chrome 156 on Linux x86_64",
+      "devicePixelRatio": 1,
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 16.0.0) (0x0000C0DE)), SwiftShader driver)"
+    },
+    "proxy320x280": {
+      "81": {
+        "avgFrameMs": 476.12999999988824,
+        "fps": 2.1002667338756953
+      },
+      "41": {
+        "avgFrameMs": 318.47999999988826,
+        "fps": 3.139914594324136
+      },
+      "21": {
+        "avgFrameMs": 193.2699999999255,
+        "fps": 5.174108759768125
+      }
+    },
+    "limitation": "These are sandbox SwiftShader measurements and a reduced-resolution proxy, not actual mobile WebGL2 hardware evidence."
+  },
+  "headAfterControls": "working-tree pending commit"
 }

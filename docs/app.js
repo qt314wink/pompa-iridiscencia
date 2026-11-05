@@ -141,6 +141,7 @@ const uniforms = {
   specimenPackedTex: { value: new THREE.DataTexture(new Uint8Array([255, 128, 0, 255]), 1, 1, THREE.RGBAFormat) },
   specimenThicknessMinNm: { value: 120.0 },
   specimenThicknessMaxNm: { value: 830.0 },
+  spectralSampleCount: { value: 81 },
 
   // Reflectance effects
   showTransmission: { value: true }
@@ -322,7 +323,7 @@ window.__bubbleDiagnostics = () => {
   const std = sum2.map((v, j) => Math.sqrt(Math.max(0, v / n - mean[j] * mean[j])));
   const lumaMean = lumaSum / n;
   return {
-    fixture: material.uniforms.specimenEnabled.value ? 'G1-POS' : 'G1-BASE',
+    fixture: globalThis.__bubbleFixture || (material.uniforms.specimenEnabled.value ? 'G1-POS' : 'G1-BASE'),
     webgl: gl instanceof WebGL2RenderingContext ? 'WebGL2' : 'WebGL1',
     drawingBuffer: [renderer.domElement.width, renderer.domElement.height],
     maxTextureUnits: gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS),
@@ -336,6 +337,43 @@ window.__bubbleDiagnostics = () => {
     specimenLoaded,
     shaderSourceBytes: globalThis.__bubbleFragPhysical__.length
   };
+};
+
+function makeFixtureTexture(r, g) {
+  const tex = new THREE.DataTexture(new Uint8Array([r, g, 0, 255]), 1, 1, THREE.RGBAFormat);
+  tex.needsUpdate = true;
+  tex.colorSpace = THREE.NoColorSpace;
+  tex.wrapS = THREE.ClampToEdgeWrapping;
+  tex.wrapT = THREE.ClampToEdgeWrapping;
+  tex.minFilter = THREE.NearestFilter;
+  tex.magFilter = THREE.NearestFilter;
+  return tex;
+}
+
+globalThis.__bubbleFixture = material.uniforms.specimenEnabled.value ? 'G1-POS' : 'G1-BASE';
+window.__bubbleControls = {
+  setSampleCount(count) {
+    material.uniforms.spectralSampleCount.value = Math.max(2, Math.min(81, Math.round(count)));
+    return material.uniforms.spectralSampleCount.value;
+  },
+  setFixture(name) {
+    if (name === 'BASE') { material.uniforms.specimenEnabled.value = false; material.uniforms.specimenPackedTex.value = specimenPackedTex; }
+    if (name === 'POS') { material.uniforms.specimenEnabled.value = true; material.uniforms.specimenPackedTex.value = specimenPackedTex; }
+    if (name === 'NULL') { material.uniforms.specimenEnabled.value = true; material.uniforms.specimenPackedTex.value = makeFixtureTexture(0, 0); }
+    if (name === 'NEG') { material.uniforms.specimenEnabled.value = true; material.uniforms.specimenPackedTex.value = makeFixtureTexture(255, 0); }
+    globalThis.__bubbleFixture = `G1-${name}`;
+    return globalThis.__bubbleFixture;
+  },
+  setRoll(degrees) { rollDeg = Number(degrees); rollSlider.value = String(degrees); setCameraFromSpherical(); },
+  setTheta(degrees) { thetaDeg = Number(degrees); thetaSlider.value = String(degrees); setCameraFromSpherical(); },
+  capture() { renderer.render(scene, camera); return window.__bubbleDiagnostics(); },
+  rotationSweep(angles = [0, 45, 90, 135, 180, 225, 270, 315]) {
+    const rows = angles.map(angle => { this.setRoll(angle); return { angle, ...this.capture() }; });
+    this.setRoll(0);
+    const lumas = rows.map(r => r.lumaMean);
+    const deltas = lumas.slice(1).map((v, i) => Math.abs(v - lumas[i]));
+    return { fixture: 'G1-SEAM-SWEEP', rows, maxAdjacentLumaDelta: Math.max(...deltas), lumaRange: Math.max(...lumas) - Math.min(...lumas) };
+  }
 };
 
 // Listeners of the physical UI

@@ -73,3 +73,28 @@ patch: 4c88a07285945e208f2f1432df599dd3df0438e5b294ac960099ddf52bb15ee7
 
 
 <!-- /coderabbit-ai-generated:v1 -->
+## Control matrix and seam result
+
+The completed browser control matrix is recorded in `docs/G1_CONTROL_MATRIX.md` and `docs/g1_binding_receipt.json`.
+
+- **G1-NULL:** neutral 1×1 map `[0,0,0,255]`; exact pixel-statistic match to G1-BASE.
+- **G1-NEG:** altered 1×1 map `[255,0,0,255]`; luma mean `0.192695` versus BASE `0.175941`, confirming causal response.
+- **G1-SEAM-SWEEP:** roll angles 0–315° in 45° increments; maximum adjacent luma delta `0.000006076857`, luma range `0.000006363126`; bounded PASS at threshold `0.001`.
+
+The seam result is limited to the roll sweep at 400×350. Elevation and geometry-remapping validation remain open.
+
+## Spectral degradation sweep
+
+The runtime now exposes `spectralSampleCount` for controlled 81/41/21 comparisons. At 400×350 on the same SwiftShader browser lab:
+
+| Samples | Avg frame | FPS | Luma mean |
+|---:|---:|---:|---:|
+| 81 | 497.29 ms | 2.01 | 0.162193 |
+| 41 | 313.11 ms | 3.19 | 0.155580 |
+| 21 | 191.65 ms | 5.22 | 0.150321 |
+
+The 21-sample approximation reduces proxy frame time by 61.4% but shifts luma by `-0.011873`; it is not promoted without an approved image-error budget.
+
+## Actual mobile hardware gate
+
+No physical mobile WebGL2 device was available. The browser reported Chrome 156 on Linux x86_64 with ANGLE SwiftShader. The 320×280 measurements in the receipt are reduced-resolution proxies only and must not be presented as device results.

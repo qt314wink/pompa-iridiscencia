@@ -51,6 +51,7 @@ uniform vec3 Ldir;
 uniform int lightMode;
 uniform float lambda0;
 uniform float spectralWidth;
+uniform int spectralSampleCount;
 
 // ---- Reflectance parameter ----
 uniform bool showTransmission;
@@ -64,7 +65,9 @@ const float PI = 3.14159265358979323846;
 const int NS = 81;  // 380..780 nm, step 5 nm
 
 vec4 sampleSpectral(int i){
-  float u = (float(i) + 0.5) / float(NS); 
+  float denom = max(float(spectralSampleCount - 1), 1.0);
+  float sourceIndex = float(i) * float(NS - 1) / denom;
+  float u = (sourceIndex + 0.5) / float(NS);
   return texture2D(cmfTex, vec2(u, 0.5));
 }
 
@@ -136,8 +139,10 @@ void main(){
   float X=0.0, Y=0.0, Z=0.0, Rsum=0.0;
  
   for (int i = 0; i < NS; ++i) {
+    if (i >= spectralSampleCount) break;
 
-    float wl_nm = wlStart + float(i) * stepNm;
+    float sampleSpan = float(NS - 1) / max(float(spectralSampleCount - 1), 1.0);
+    float wl_nm = wlStart + float(i) * stepNm * sampleSpan;
     float wl_m  = wl_nm * 1e-9;
 
     float rs12, rp12, cos2;
@@ -184,7 +189,8 @@ void main(){
 
 
 // ------- Photometric normalization and reflected irraciance -------
-float scale = kNorm * stepNm;
+float integrationStep = (wlEnd - wlStart) / max(float(spectralSampleCount - 1), 1.0);
+float scale = kNorm * integrationStep;
 vec3 XYZ    = vec3(X, Y, Z) * scale;
 vec3 rgbLin = xyz2rgbLinear(XYZ);
 vec3 rgbRefl = linear2srgb(rgbLin);  // reflexión en sRGB
