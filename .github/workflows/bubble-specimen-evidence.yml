@@ -1,0 +1,41 @@
+name: Bubble specimen evidence
+
+on:
+  pull_request:
+    paths:
+      - 'specimens/bubble_membrane/**'
+      - 'docs/specimens/bubble_membrane/**'
+      - 'docs/index.html'
+      - 'docs/specimen.html'
+      - 'docs/app.js'
+      - 'docs/shader.js'
+      - 'tests/**'
+      - 'requirements-dev.txt'
+      - '.github/workflows/bubble-specimen-evidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install the existing validator dependencies
+        run: |
+          python3 -m venv "$RUNNER_TEMP/specimen-env"
+          "$RUNNER_TEMP/specimen-env/bin/python" -m pip install -r requirements-dev.txt
+      - name: Validate and measure the specimen
+        run: '"$RUNNER_TEMP/specimen-env/bin/python" tests/run_specimen_evidence.py --out "$RUNNER_TEMP/bubble-specimen.json"'
+      - name: Preserve the evidence receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: bubble-specimen-evidence
+          path: ${{ runner.temp }}/bubble-specimen.json
+          if-no-files-found: warn
+          retention-days: 14
